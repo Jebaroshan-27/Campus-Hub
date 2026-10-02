@@ -10,3 +10,5 @@ export { default as Avatar } from './Avatar';
 export { default as StatusBadge } from './StatusBadge';
 export { default as EmptyState } from './EmptyState';
 export { default as LoadingIndicator } from './LoadingIndicator';
+export { default as NoteCard } from './notes/NoteCard';
+export { default as PlacementCard } from './placements/PlacementCard';

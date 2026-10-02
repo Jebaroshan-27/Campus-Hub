@@ -11,6 +11,10 @@ import ManageNotesScreen from '../screens/admin/ManageNotesScreen';
 import ManagePlacementsScreen from '../screens/admin/ManagePlacementsScreen';
 import ManageEventsScreen from '../screens/admin/ManageEventsScreen';
 import AdminProfileScreen from '../screens/admin/AdminProfileScreen';
+import CreatePlacementScreen from '../screens/admin/CreatePlacementScreen';
+import EditPlacementScreen from '../screens/admin/EditPlacementScreen';
+import NoteDetailsScreen from '../screens/student/NoteDetailsScreen';
+import PlacementDetailsScreen from '../screens/student/PlacementDetailsScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -91,6 +95,14 @@ export default function AdminNavigator() {
     >
       <Stack.Screen name="AdminMainTabs" component={AdminTabNavigator} />
       <Stack.Screen name="AdminManageEvents" component={ManageEventsScreen} />
+      <Stack.Screen name="NoteDetails" component={NoteDetailsScreen} />
+      <Stack.Screen name="NoteDetailsScreen" component={NoteDetailsScreen} />
+      <Stack.Screen name="PlacementDetails" component={PlacementDetailsScreen} />
+      <Stack.Screen name="PlacementDetailsScreen" component={PlacementDetailsScreen} />
+      <Stack.Screen name="CreatePlacementScreen" component={CreatePlacementScreen} />
+      <Stack.Screen name="CreatePlacement" component={CreatePlacementScreen} />
+      <Stack.Screen name="EditPlacementScreen" component={EditPlacementScreen} />
+      <Stack.Screen name="EditPlacement" component={EditPlacementScreen} />
     </Stack.Navigator>
   );
 }

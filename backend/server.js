@@ -7,6 +7,8 @@ dotenv.config();
 
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
+const noteRoutes = require('./routes/noteRoutes');
+const placementRoutes = require('./routes/placementRoutes');
 const testRoutes = require('./routes/testRoutes');
 const { notFoundHandler, errorHandler } = require('./middleware/errorMiddleware');
 
@@ -36,6 +38,8 @@ app.get('/api/health', (req, res) => {
 
 // Mount Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/notes', noteRoutes);
+app.use('/api/placements', placementRoutes);
 app.use('/api/test', testRoutes);
 
 // Error Handling Middleware

@@ -7,7 +7,9 @@ import { COLORS } from '../constants/theme';
 // Student Screens
 import StudentDashboardScreen from '../screens/student/StudentDashboardScreen';
 import NotesScreen from '../screens/student/NotesScreen';
+import NoteDetailsScreen from '../screens/student/NoteDetailsScreen';
 import PlacementsScreen from '../screens/student/PlacementsScreen';
+import PlacementDetailsScreen from '../screens/student/PlacementDetailsScreen';
 import EventsScreen from '../screens/student/EventsScreen';
 import ChatScreen from '../screens/student/ChatScreen';
 import StudentProfileScreen from '../screens/student/StudentProfileScreen';
@@ -108,7 +110,11 @@ export default function StudentNavigator() {
       <Stack.Screen name="StudentChat" component={ChatScreen} />
       <Stack.Screen name="ChatScreen" component={ChatScreen} />
       <Stack.Screen name="NotesScreen" component={NotesScreen} />
+      <Stack.Screen name="NoteDetails" component={NoteDetailsScreen} />
+      <Stack.Screen name="NoteDetailsScreen" component={NoteDetailsScreen} />
       <Stack.Screen name="PlacementsScreen" component={PlacementsScreen} />
+      <Stack.Screen name="PlacementDetails" component={PlacementDetailsScreen} />
+      <Stack.Screen name="PlacementDetailsScreen" component={PlacementDetailsScreen} />
       <Stack.Screen name="EventsScreen" component={EventsScreen} />
     </Stack.Navigator>
   );

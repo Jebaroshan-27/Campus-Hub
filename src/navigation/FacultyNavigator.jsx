@@ -7,6 +7,8 @@ import { COLORS } from '../constants/theme';
 // Faculty Screens
 import FacultyDashboardScreen from '../screens/faculty/FacultyDashboardScreen';
 import FacultyNotesScreen from '../screens/faculty/FacultyNotesScreen';
+import UploadNoteScreen from '../screens/faculty/UploadNoteScreen';
+import NoteDetailsScreen from '../screens/student/NoteDetailsScreen';
 import FacultyEventsScreen from '../screens/faculty/FacultyEventsScreen';
 import FacultyProfileScreen from '../screens/faculty/FacultyProfileScreen';
 import FacultyNotificationsScreen from '../screens/faculty/FacultyNotificationsScreen';
@@ -86,6 +88,10 @@ export default function FacultyNavigator() {
         name="FacultyNotifications"
         component={FacultyNotificationsScreen}
       />
+      <Stack.Screen name="UploadNoteScreen" component={UploadNoteScreen} />
+      <Stack.Screen name="UploadNote" component={UploadNoteScreen} />
+      <Stack.Screen name="NoteDetails" component={NoteDetailsScreen} />
+      <Stack.Screen name="NoteDetailsScreen" component={NoteDetailsScreen} />
     </Stack.Navigator>
   );
 }
