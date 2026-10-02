@@ -1,0 +1,267 @@
+export const MOCK_USER_STUDENT = {
+  id: 'usr_std_01',
+  name: 'Alex Johnson',
+  email: 'alex.johnson@campushub.edu',
+  regNo: '21BCS0142',
+  role: 'student',
+  department: 'Computer Science & Engineering',
+  year: '4th Year / Sem 8',
+  avatar: 'AJ',
+  phone: '+91 98765 43210',
+  gpa: '8.92',
+};
+
+export const MOCK_USER_FACULTY = {
+  id: 'usr_fac_01',
+  name: 'Dr. Sarah Mitchell',
+  email: 's.mitchell@campushub.edu',
+  role: 'faculty',
+  department: 'Computer Science & Engineering',
+  designation: 'Associate Professor & HOD',
+  avatar: 'SM',
+  phone: '+91 98765 43211',
+  office: 'Room 304, CS Block',
+};
+
+export const MOCK_USER_ADMIN = {
+  id: 'usr_adm_01',
+  name: 'Campus Administrator',
+  email: 'admin@campushub.edu',
+  role: 'admin',
+  department: 'Campus IT & Administration',
+  designation: 'Chief Systems Administrator',
+  avatar: 'CA',
+  phone: '+91 98765 43212',
+};
+
+export const MOCK_NOTES = [
+  {
+    id: 'note_1',
+    title: 'Distributed Systems & Cloud Computing',
+    subject: 'CS401',
+    author: 'Prof. David Wilson',
+    department: 'Computer Science',
+    fileSize: '4.2 MB',
+    downloads: 142,
+    date: 'Oct 01, 2026',
+    tag: 'Cloud',
+  },
+  {
+    id: 'note_2',
+    title: 'Compiler Design - Syntax Analysis & AST',
+    subject: 'CS403',
+    author: 'Dr. Sarah Mitchell',
+    department: 'Computer Science',
+    fileSize: '6.8 MB',
+    downloads: 218,
+    date: 'Sep 28, 2026',
+    tag: 'Core CS',
+  },
+  {
+    id: 'note_3',
+    title: 'Machine Learning Foundations & PyTorch Lab',
+    subject: 'AI302',
+    author: 'Dr. Robert Chen',
+    department: 'Artificial Intelligence',
+    fileSize: '12.4 MB',
+    downloads: 389,
+    date: 'Sep 24, 2026',
+    tag: 'AI/ML',
+  },
+  {
+    id: 'note_4',
+    title: 'Digital Signal Processing Algorithms',
+    subject: 'EC305',
+    author: 'Prof. Ananya Roy',
+    department: 'Electronics',
+    fileSize: '3.1 MB',
+    downloads: 95,
+    date: 'Sep 20, 2026',
+    tag: 'ECE',
+  },
+];
+
+export const MOCK_PLACEMENTS = [
+  {
+    id: 'plc_1',
+    company: 'Microsoft',
+    role: 'Software Development Engineer',
+    package: '₹ 44.5 LPA',
+    location: 'Hyderabad / Bengaluru',
+    deadline: 'Oct 15, 2026',
+    eligibility: 'B.Tech CS / IT / ECE (CGPA >= 8.0)',
+    status: 'Open',
+    logo: 'MS',
+  },
+  {
+    id: 'plc_2',
+    company: 'Amazon Web Services',
+    role: 'Cloud Support Associate',
+    package: '₹ 22.0 LPA',
+    location: 'Bengaluru',
+    deadline: 'Oct 18, 2026',
+    eligibility: 'All B.Tech Branches (CGPA >= 7.5)',
+    status: 'Open',
+    logo: 'AWS',
+  },
+  {
+    id: 'plc_3',
+    company: 'Oracle',
+    role: 'Associate Consultant - Database Systems',
+    package: '₹ 18.5 LPA',
+    location: 'Mumbai / Pune',
+    deadline: 'Oct 25, 2026',
+    eligibility: 'B.Tech CS/IT/MCA (CGPA >= 7.0)',
+    status: 'Upcoming',
+    logo: 'ORC',
+  },
+];
+
+export const MOCK_EVENTS = [
+  {
+    id: 'ev_1',
+    title: 'HackCampus 2026 - 36hr National Hackathon',
+    category: 'Hackathon',
+    date: 'Oct 12-14, 2026',
+    venue: 'Auditorium Hall B',
+    attendees: 320,
+    status: 'Registration Open',
+  },
+  {
+    id: 'ev_2',
+    title: 'Guest Lecture: Next-Gen Quantum Architecture',
+    category: 'Workshop',
+    date: 'Oct 08, 2026 • 2:00 PM',
+    venue: 'Seminar Hall 2',
+    attendees: 110,
+    status: 'Upcoming',
+  },
+  {
+    id: 'ev_3',
+    title: 'Annual Inter-College Cultural Fest - Elysium',
+    category: 'Cultural',
+    date: 'Nov 04-06, 2026',
+    venue: 'Campus Open Ground',
+    attendees: 1500,
+    status: 'Announced',
+  },
+];
+
+export const MOCK_CONNECTIONS = [
+  {
+    id: 'cn_1',
+    name: 'Priya Sharma',
+    department: 'CSE - 3rd Year',
+    regNo: '22BCS0084',
+    mutual: 8,
+    status: 'connected',
+    avatar: 'PS',
+  },
+  {
+    id: 'cn_2',
+    name: 'Rohan Verma',
+    department: 'ECE - 4th Year',
+    regNo: '21BEC0112',
+    mutual: 4,
+    status: 'pending',
+    avatar: 'RV',
+  },
+  {
+    id: 'cn_3',
+    name: 'Kavita Nair',
+    department: 'IT - 4th Year',
+    regNo: '21BIT0035',
+    mutual: 12,
+    status: 'connected',
+    avatar: 'KN',
+  },
+];
+
+export const MOCK_CHATS = [
+  {
+    id: 'ch_1',
+    name: 'Priya Sharma',
+    lastMessage: 'Did you finish the compiler assignment questions?',
+    time: '11:42 AM',
+    unread: 2,
+    online: true,
+  },
+  {
+    id: 'ch_2',
+    name: 'HackCampus CSE Team',
+    lastMessage: 'Alex: Let us meet at the library cafeteria at 4 PM.',
+    time: 'Yesterday',
+    unread: 0,
+    online: false,
+  },
+  {
+    id: 'ch_3',
+    name: 'Kavita Nair',
+    lastMessage: 'Thanks for sharing the Cloud Computing lecture slides!',
+    time: 'Sep 30',
+    unread: 0,
+    online: false,
+  },
+];
+
+export const MOCK_NOTIFICATIONS = [
+  {
+    id: 'notif_1',
+    title: 'New Placement Drive Announced',
+    description: 'Microsoft SDE applications are now open. Deadline: Oct 15.',
+    time: '15m ago',
+    type: 'placement',
+    read: false,
+  },
+  {
+    id: 'notif_2',
+    title: 'New Notes Uploaded',
+    description: 'Dr. Sarah Mitchell uploaded Compiler Design - AST slides.',
+    time: '2h ago',
+    type: 'notes',
+    read: false,
+  },
+  {
+    id: 'notif_3',
+    title: 'Connect Request Accepted',
+    description: 'Priya Sharma accepted your collaboration connection request.',
+    time: 'Yesterday',
+    type: 'connect',
+    read: true,
+  },
+];
+
+export const MOCK_USERS_ADMIN = [
+  {
+    id: 'u1',
+    name: 'Alex Johnson',
+    email: 'alex.johnson@campushub.edu',
+    role: 'student',
+    regNo: '21BCS0142',
+    status: 'Active',
+  },
+  {
+    id: 'u2',
+    name: 'Dr. Sarah Mitchell',
+    email: 's.mitchell@campushub.edu',
+    role: 'faculty',
+    regNo: 'FAC-CS-109',
+    status: 'Active',
+  },
+  {
+    id: 'u3',
+    name: 'Priya Sharma',
+    email: 'priya.s@campushub.edu',
+    role: 'student',
+    regNo: '22BCS0084',
+    status: 'Active',
+  },
+  {
+    id: 'u4',
+    name: 'Dr. Robert Chen',
+    email: 'r.chen@campushub.edu',
+    role: 'faculty',
+    regNo: 'FAC-AI-202',
+    status: 'Active',
+  },
+];
