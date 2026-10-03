@@ -10,6 +10,10 @@ import FacultyNotesScreen from '../screens/faculty/FacultyNotesScreen';
 import UploadNoteScreen from '../screens/faculty/UploadNoteScreen';
 import NoteDetailsScreen from '../screens/student/NoteDetailsScreen';
 import FacultyEventsScreen from '../screens/faculty/FacultyEventsScreen';
+import CreateEventScreen from '../screens/faculty/CreateEventScreen';
+import EditEventScreen from '../screens/faculty/EditEventScreen';
+import EventRegistrationsScreen from '../screens/admin/EventRegistrationsScreen';
+import EventDetailsScreen from '../screens/student/EventDetailsScreen';
 import FacultyProfileScreen from '../screens/faculty/FacultyProfileScreen';
 import FacultyNotificationsScreen from '../screens/faculty/FacultyNotificationsScreen';
 
@@ -92,6 +96,14 @@ export default function FacultyNavigator() {
       <Stack.Screen name="UploadNote" component={UploadNoteScreen} />
       <Stack.Screen name="NoteDetails" component={NoteDetailsScreen} />
       <Stack.Screen name="NoteDetailsScreen" component={NoteDetailsScreen} />
+      <Stack.Screen name="CreateEventScreen" component={CreateEventScreen} />
+      <Stack.Screen name="CreateEvent" component={CreateEventScreen} />
+      <Stack.Screen name="EditEventScreen" component={EditEventScreen} />
+      <Stack.Screen name="EditEvent" component={EditEventScreen} />
+      <Stack.Screen name="EventRegistrationsScreen" component={EventRegistrationsScreen} />
+      <Stack.Screen name="EventRegistrations" component={EventRegistrationsScreen} />
+      <Stack.Screen name="EventDetails" component={EventDetailsScreen} />
+      <Stack.Screen name="EventDetailsScreen" component={EventDetailsScreen} />
     </Stack.Navigator>
   );
 }

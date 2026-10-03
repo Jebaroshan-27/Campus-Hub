@@ -10,11 +10,16 @@ import ManageUsersScreen from '../screens/admin/ManageUsersScreen';
 import ManageNotesScreen from '../screens/admin/ManageNotesScreen';
 import ManagePlacementsScreen from '../screens/admin/ManagePlacementsScreen';
 import ManageEventsScreen from '../screens/admin/ManageEventsScreen';
+import AdminEventsScreen from '../screens/admin/AdminEventsScreen';
+import CreateEventScreen from '../screens/faculty/CreateEventScreen';
+import EditEventScreen from '../screens/faculty/EditEventScreen';
+import EventRegistrationsScreen from '../screens/admin/EventRegistrationsScreen';
 import AdminProfileScreen from '../screens/admin/AdminProfileScreen';
 import CreatePlacementScreen from '../screens/admin/CreatePlacementScreen';
 import EditPlacementScreen from '../screens/admin/EditPlacementScreen';
 import NoteDetailsScreen from '../screens/student/NoteDetailsScreen';
 import PlacementDetailsScreen from '../screens/student/PlacementDetailsScreen';
+import EventDetailsScreen from '../screens/student/EventDetailsScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -95,6 +100,15 @@ export default function AdminNavigator() {
     >
       <Stack.Screen name="AdminMainTabs" component={AdminTabNavigator} />
       <Stack.Screen name="AdminManageEvents" component={ManageEventsScreen} />
+      <Stack.Screen name="AdminEventsScreen" component={AdminEventsScreen} />
+      <Stack.Screen name="CreateEventScreen" component={CreateEventScreen} />
+      <Stack.Screen name="CreateEvent" component={CreateEventScreen} />
+      <Stack.Screen name="EditEventScreen" component={EditEventScreen} />
+      <Stack.Screen name="EditEvent" component={EditEventScreen} />
+      <Stack.Screen name="EventRegistrationsScreen" component={EventRegistrationsScreen} />
+      <Stack.Screen name="EventRegistrations" component={EventRegistrationsScreen} />
+      <Stack.Screen name="EventDetails" component={EventDetailsScreen} />
+      <Stack.Screen name="EventDetailsScreen" component={EventDetailsScreen} />
       <Stack.Screen name="NoteDetails" component={NoteDetailsScreen} />
       <Stack.Screen name="NoteDetailsScreen" component={NoteDetailsScreen} />
       <Stack.Screen name="PlacementDetails" component={PlacementDetailsScreen} />

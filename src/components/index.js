@@ -12,3 +12,5 @@ export { default as EmptyState } from './EmptyState';
 export { default as LoadingIndicator } from './LoadingIndicator';
 export { default as NoteCard } from './notes/NoteCard';
 export { default as PlacementCard } from './placements/PlacementCard';
+export { default as EventCard } from './events/EventCard';
+export { default as EventForm } from './events/EventForm';

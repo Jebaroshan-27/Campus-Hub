@@ -11,6 +11,9 @@ import NoteDetailsScreen from '../screens/student/NoteDetailsScreen';
 import PlacementsScreen from '../screens/student/PlacementsScreen';
 import PlacementDetailsScreen from '../screens/student/PlacementDetailsScreen';
 import EventsScreen from '../screens/student/EventsScreen';
+import EventDetailsScreen from '../screens/student/EventDetailsScreen';
+import MyRegistrationsScreen from '../screens/student/MyRegistrationsScreen';
+import ChatListScreen from '../screens/student/ChatListScreen';
 import ChatScreen from '../screens/student/ChatScreen';
 import StudentProfileScreen from '../screens/student/StudentProfileScreen';
 import ConnectionsScreen from '../screens/student/ConnectionsScreen';
@@ -78,7 +81,7 @@ function StudentTabNavigator() {
       />
       <Tab.Screen
         name="StudentChatTab"
-        component={ChatScreen}
+        component={ChatListScreen}
         options={{ tabBarLabel: 'Chat' }}
       />
     </Tab.Navigator>
@@ -106,9 +109,13 @@ export default function StudentNavigator() {
       <Stack.Screen name="StudentConnections" component={ConnectionsScreen} />
       <Stack.Screen name="ConnectionsScreen" component={ConnectionsScreen} />
 
-      {/* Fallback stack screen targets */}
+      {/* Chat & messaging */}
+      <Stack.Screen name="ChatListScreen" component={ChatListScreen} />
+      <Stack.Screen name="ChatList" component={ChatListScreen} />
       <Stack.Screen name="StudentChat" component={ChatScreen} />
       <Stack.Screen name="ChatScreen" component={ChatScreen} />
+
+      {/* Fallback stack screen targets */}
       <Stack.Screen name="NotesScreen" component={NotesScreen} />
       <Stack.Screen name="NoteDetails" component={NoteDetailsScreen} />
       <Stack.Screen name="NoteDetailsScreen" component={NoteDetailsScreen} />
@@ -116,6 +123,10 @@ export default function StudentNavigator() {
       <Stack.Screen name="PlacementDetails" component={PlacementDetailsScreen} />
       <Stack.Screen name="PlacementDetailsScreen" component={PlacementDetailsScreen} />
       <Stack.Screen name="EventsScreen" component={EventsScreen} />
+      <Stack.Screen name="EventDetails" component={EventDetailsScreen} />
+      <Stack.Screen name="EventDetailsScreen" component={EventDetailsScreen} />
+      <Stack.Screen name="MyRegistrations" component={MyRegistrationsScreen} />
+      <Stack.Screen name="MyRegistrationsScreen" component={MyRegistrationsScreen} />
     </Stack.Navigator>
   );
 }

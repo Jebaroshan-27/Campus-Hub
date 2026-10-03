@@ -7,6 +7,7 @@ import {
   StyleSheet,
   Alert,
   RefreshControl,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
@@ -21,21 +22,33 @@ import {
 } from '../../components';
 import eventService from '../../services/eventService';
 
-export default function FacultyEventsScreen({ navigation }) {
+const EVENT_TYPES = [
+  'All',
+  'Workshop',
+  'Seminar',
+  'Hackathon',
+  'Technical',
+  'Cultural',
+  'Sports',
+];
+
+export default function AdminEventsScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedType, setSelectedType] = useState('All');
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
 
-  const fetchMyEvents = useCallback(async () => {
+  const fetchEvents = useCallback(async () => {
     try {
       setError(null);
-      const params = {
-        creator: 'me',
-      };
+      const params = {};
       if (searchQuery.trim()) {
         params.search = searchQuery.trim();
+      }
+      if (selectedType !== 'All') {
+        params.eventType = selectedType;
       }
 
       const res = await eventService.getEvents(params);
@@ -43,28 +56,28 @@ export default function FacultyEventsScreen({ navigation }) {
         setEvents(res.events || []);
       }
     } catch (err) {
-      setError(err.message || 'Failed to load your events.');
+      setError(err.message || 'Failed to load events.');
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [searchQuery]);
+  }, [searchQuery, selectedType]);
 
   useEffect(() => {
-    fetchMyEvents();
-  }, [fetchMyEvents]);
+    fetchEvents();
+  }, [fetchEvents]);
 
   // Refetch when screen comes into focus
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      fetchMyEvents();
+      fetchEvents();
     });
     return unsubscribe;
-  }, [navigation, fetchMyEvents]);
+  }, [navigation, fetchEvents]);
 
   const onRefresh = () => {
     setRefreshing(true);
-    fetchMyEvents();
+    fetchEvents();
   };
 
   const handleCreate = () => {
@@ -80,10 +93,10 @@ export default function FacultyEventsScreen({ navigation }) {
 
   const handleDelete = (event) => {
     Alert.alert(
-      'Cancel & Delete Event',
-      `Are you sure you want to delete "${event.title}"? Registered students will be removed.`,
+      'Delete Event',
+      `Are you sure you want to permanently delete "${event.title}"? Associated student registrations will also be removed.`,
       [
-        { text: 'Keep', style: 'cancel' },
+        { text: 'Cancel', style: 'cancel' },
         {
           text: 'Delete',
           style: 'destructive',
@@ -91,11 +104,11 @@ export default function FacultyEventsScreen({ navigation }) {
             try {
               const res = await eventService.deleteEvent(event._id);
               if (res && res.success) {
-                Alert.alert('Deleted', 'Event removed successfully.');
+                Alert.alert('Deleted', 'Event deleted successfully.');
                 setEvents((prev) => prev.filter((e) => e._id !== event._id));
               }
             } catch (err) {
-              Alert.alert('Error', err.message || 'Failed to delete event.');
+              Alert.alert('Error', err.message || 'Could not delete event.');
             }
           },
         },
@@ -129,14 +142,16 @@ export default function FacultyEventsScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
       <AppHeader
-        title="Faculty Events"
-        subtitle="Organize workshops, guest lectures & technical meets"
+        title="Events Administration"
+        subtitle="Manage campus symposiums, hackathons & guest talks"
+        showBack={navigation?.canGoBack ? navigation.canGoBack() : false}
+        onBackPress={() => navigation.goBack()}
         rightAction={
           <AppButton
             title="+ Create Event"
             size="sm"
-            icon="add"
             onPress={handleCreate}
+            icon="add"
           />
         }
       />
@@ -145,13 +160,38 @@ export default function FacultyEventsScreen({ navigation }) {
         <SearchBar
           value={searchQuery}
           onChangeText={setSearchQuery}
-          placeholder="Filter your scheduled events..."
+          placeholder="Search all institutional events..."
           style={styles.searchBar}
           onClear={() => setSearchQuery('')}
         />
 
+        {/* Type Filter */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.typeFilterRow}
+        >
+          {EVENT_TYPES.map((type) => {
+            const active = selectedType === type;
+            return (
+              <TouchableOpacity
+                key={type}
+                style={[styles.typeBtn, active && styles.typeBtnActive]}
+                onPress={() => setSelectedType(type)}
+                activeOpacity={0.7}
+              >
+                <Text
+                  style={[styles.typeBtnText, active && styles.typeBtnTextActive]}
+                >
+                  {type}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </ScrollView>
+
         {loading && !refreshing ? (
-          <LoadingIndicator message="Fetching your scheduled events..." />
+          <LoadingIndicator message="Fetching all campus events..." />
         ) : (
           <FlatList
             data={events}
@@ -163,21 +203,21 @@ export default function FacultyEventsScreen({ navigation }) {
               <RefreshControl
                 refreshing={refreshing}
                 onRefresh={onRefresh}
-                colors={[COLORS.secondary]}
-                tintColor={COLORS.secondary}
+                colors={[COLORS.primary]}
+                tintColor={COLORS.primary}
               />
             }
             ListEmptyComponent={
               <EmptyState
                 icon="calendar-outline"
-                title="No Events Created"
+                title="No Events Found"
                 message={
                   error ||
-                  (searchQuery
-                    ? 'No events match your search.'
-                    : 'You have not scheduled any events yet. Organize workshops or guest lectures for your department.')
+                  (searchQuery || selectedType !== 'All'
+                    ? 'No events match your criteria.'
+                    : 'No campus events have been created yet.')
                 }
-                actionTitle="Schedule First Event"
+                actionTitle="+ Create First Event"
                 onActionPress={handleCreate}
               />
             }
@@ -200,6 +240,32 @@ const styles = StyleSheet.create({
   searchBar: {
     marginTop: SPACING.sm,
     marginBottom: SPACING.xs,
+  },
+  typeFilterRow: {
+    flexDirection: 'row',
+    gap: 6,
+    paddingVertical: 6,
+    marginBottom: SPACING.xs,
+  },
+  typeBtn: {
+    paddingVertical: 5,
+    paddingHorizontal: 12,
+    borderRadius: RADIUS.full,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  typeBtnActive: {
+    backgroundColor: COLORS.primaryDark,
+    borderColor: COLORS.primaryDark,
+  },
+  typeBtnText: {
+    ...TYPOGRAPHY.caption,
+    color: COLORS.textSecondary,
+    fontWeight: '600',
+  },
+  typeBtnTextActive: {
+    color: '#FFFFFF',
   },
   listContent: {
     paddingTop: SPACING.xs,

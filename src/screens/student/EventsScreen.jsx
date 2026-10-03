@@ -1,138 +1,219 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
   Text,
   FlatList,
   TouchableOpacity,
   StyleSheet,
-  Alert,
+  RefreshControl,
+  ScrollView,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { COLORS, SPACING, RADIUS, TYPOGRAPHY } from '../../constants/theme';
-import { AppHeader, AppCard, AppButton, SearchBar, EmptyState } from '../../components';
-import { MOCK_EVENTS } from '../../constants/mockData';
+import {
+  AppHeader,
+  SearchBar,
+  EmptyState,
+  LoadingIndicator,
+  EventCard,
+} from '../../components';
+import eventService from '../../services/eventService';
 
-const CATEGORIES = ['All', 'Hackathon', 'Workshop', 'Cultural'];
+const EVENT_TYPES = [
+  'All',
+  'Workshop',
+  'Seminar',
+  'Hackathon',
+  'Technical',
+  'Cultural',
+  'Sports',
+];
+
+const PRICING_OPTIONS = ['All', 'Free', 'Paid'];
 
 export default function EventsScreen({ navigation }) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedType, setSelectedType] = useState('All');
+  const [selectedPricing, setSelectedPricing] = useState('All');
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [error, setError] = useState(null);
 
-  const filteredEvents = MOCK_EVENTS.filter((item) => {
-    const matchesQuery =
-      item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.venue.toLowerCase().includes(searchQuery.toLowerCase());
+  const fetchEvents = useCallback(async () => {
+    try {
+      setError(null);
+      const params = {};
 
-    const matchesCategory =
-      selectedCategory === 'All' || item.category === selectedCategory;
+      if (searchQuery.trim()) {
+        params.search = searchQuery.trim();
+      }
 
-    return matchesQuery && matchesCategory;
-  });
+      if (selectedType !== 'All') {
+        params.eventType = selectedType;
+      }
 
-  const handleRegister = (title) => {
-    Alert.alert(
-      'Event RSVP Confirmed',
-      `You are registered for "${title}". A calendar invite has been queued.`
-    );
+      if (selectedPricing === 'Free') {
+        params.isPaid = false;
+      } else if (selectedPricing === 'Paid') {
+        params.isPaid = true;
+      }
+
+      const res = await eventService.getEvents(params);
+      if (res && res.success) {
+        setEvents(res.events || []);
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to load events. Please check your connection.');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  }, [searchQuery, selectedType, selectedPricing]);
+
+  useEffect(() => {
+    fetchEvents();
+  }, [fetchEvents]);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchEvents();
+  };
+
+  const resetFilters = () => {
+    setSearchQuery('');
+    setSelectedType('All');
+    setSelectedPricing('All');
+  };
+
+  const handleOpenDetails = (event) => {
+    navigation.navigate('EventDetails', {
+      eventId: event._id,
+      eventTitle: event.title,
+    });
   };
 
   const renderEventItem = ({ item }) => (
-    <AppCard style={styles.card} padding="lg">
-      <View style={styles.headerRow}>
-        <View style={styles.categoryBadge}>
-          <Text style={styles.categoryText}>{item.category}</Text>
-        </View>
-        <View style={styles.statusBadge}>
-          <Text style={styles.statusText}>{item.status}</Text>
-        </View>
-      </View>
-
-      <Text style={styles.eventTitle}>{item.title}</Text>
-
-      <View style={styles.infoRow}>
-        <Ionicons name="calendar-outline" size={16} color={COLORS.primary} />
-        <Text style={styles.infoText}>{item.date}</Text>
-      </View>
-
-      <View style={styles.infoRow}>
-        <Ionicons name="location-outline" size={16} color={COLORS.primary} />
-        <Text style={styles.infoText}>{item.venue}</Text>
-      </View>
-
-      <View style={styles.infoRow}>
-        <Ionicons name="people-outline" size={16} color={COLORS.textMuted} />
-        <Text style={styles.infoText}>{item.attendees} Registered participants</Text>
-      </View>
-
-      <View style={styles.footerRow}>
-        <AppButton
-          title="RSVP / Register"
-          size="sm"
-          onPress={() => handleRegister(item.title)}
-          icon="ticket-outline"
-        />
-      </View>
-    </AppCard>
+    <EventCard
+      event={item}
+      isRegistered={item.isUserRegistered}
+      onPress={() => handleOpenDetails(item)}
+    />
   );
 
   return (
     <SafeAreaView style={styles.safeArea} edges={['top']}>
       <AppHeader
-        title="Campus Events"
-        subtitle="Hackathons, workshops, technical symposiums & fests"
+        title="Events"
+        subtitle="Workshops, hackathons, symposiums & college fests"
         showBack={navigation?.canGoBack ? navigation.canGoBack() : false}
+        rightAction={
+          <TouchableOpacity
+            style={styles.myTicketsBtn}
+            onPress={() => navigation.navigate('MyRegistrations')}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="ticket-outline" size={16} color={COLORS.primary} />
+            <Text style={styles.myTicketsText}>My RSVPs</Text>
+          </TouchableOpacity>
+        }
       />
 
       <View style={styles.container}>
+        {/* Search Input */}
         <SearchBar
           value={searchQuery}
           onChangeText={setSearchQuery}
-          placeholder="Search campus events..."
+          placeholder="Search events by title, organizer, or venue..."
           style={styles.searchBar}
+          onClear={() => setSearchQuery('')}
         />
 
-        <View style={styles.categoriesRow}>
-          {CATEGORIES.map((cat) => (
-            <TouchableOpacity
-              key={cat}
-              style={[
-                styles.catBtn,
-                selectedCategory === cat && styles.catBtnActive,
-              ]}
-              onPress={() => setSelectedCategory(cat)}
-            >
-              <Text
-                style={[
-                  styles.catBtnText,
-                  selectedCategory === cat && styles.catBtnTextActive,
-                ]}
-              >
-                {cat}
-              </Text>
-            </TouchableOpacity>
-          ))}
+        {/* Filters Row: Event Types & Pricing */}
+        <View style={styles.filterSection}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.typeFilterRow}
+          >
+            {EVENT_TYPES.map((type) => {
+              const active = selectedType === type;
+              return (
+                <TouchableOpacity
+                  key={type}
+                  style={[styles.typeBtn, active && styles.typeBtnActive]}
+                  onPress={() => setSelectedType(type)}
+                  activeOpacity={0.7}
+                >
+                  <Text style={[styles.typeBtnText, active && styles.typeBtnTextActive]}>
+                    {type}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </ScrollView>
+
+          {/* Pricing Chips (Free / Paid) */}
+          <View style={styles.pricingRow}>
+            <Text style={styles.filterLabel}>Fee:</Text>
+            {PRICING_OPTIONS.map((pricing) => {
+              const active = selectedPricing === pricing;
+              return (
+                <TouchableOpacity
+                  key={pricing}
+                  style={[styles.pricingPill, active && styles.pricingPillActive]}
+                  onPress={() => setSelectedPricing(pricing)}
+                  activeOpacity={0.7}
+                >
+                  <Text
+                    style={[
+                      styles.pricingPillText,
+                      active && styles.pricingPillTextActive,
+                    ]}
+                  >
+                    {pricing}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
+          </View>
         </View>
 
-        <FlatList
-          data={filteredEvents}
-          keyExtractor={(item) => item.id}
-          renderItem={renderEventItem}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-          ListEmptyComponent={
-            <EmptyState
-              icon="calendar-outline"
-              title="No Campus Events Found"
-              message="No events match your criteria. Check back soon for upcoming college events."
-              actionTitle="Reset Filters"
-              onActionPress={() => {
-                setSearchQuery('');
-                setSelectedCategory('All');
-              }}
-            />
-          }
-        />
+        {/* Content Area */}
+        {loading && !refreshing ? (
+          <LoadingIndicator message="Fetching latest campus events..." />
+        ) : (
+          <FlatList
+            data={events}
+            keyExtractor={(item) => item._id}
+            renderItem={renderEventItem}
+            contentContainerStyle={styles.listContent}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={[COLORS.primary]}
+                tintColor={COLORS.primary}
+              />
+            }
+            ListEmptyComponent={
+              <EmptyState
+                icon="calendar-outline"
+                title="No Events Found"
+                message={
+                  error ||
+                  (searchQuery || selectedType !== 'All' || selectedPricing !== 'All'
+                    ? 'No events match your current filter settings.'
+                    : 'No campus events currently scheduled. Check back soon.')
+                }
+                actionTitle="Reset Filters"
+                onActionPress={resetFilters}
+              />
+            }
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -147,92 +228,91 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: SPACING.lg,
   },
-  searchBar: {
-    marginVertical: SPACING.md,
-  },
-  categoriesRow: {
+  myTicketsBtn: {
     flexDirection: 'row',
-    gap: SPACING.xs + 4,
-    marginBottom: SPACING.md,
-  },
-  catBtn: {
-    paddingVertical: 6,
-    paddingHorizontal: SPACING.md,
-    borderRadius: RADIUS.full,
-    backgroundColor: COLORS.surface,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-  },
-  catBtnActive: {
-    backgroundColor: COLORS.primary,
-    borderColor: COLORS.primary,
-  },
-  catBtnText: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.textSecondary,
-    fontWeight: '600',
-  },
-  catBtnTextActive: {
-    color: '#FFFFFF',
-  },
-  listContent: {
-    paddingBottom: SPACING.xxxl,
-  },
-  card: {
-    marginBottom: SPACING.md,
-  },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: SPACING.xs,
-  },
-  categoryBadge: {
-    backgroundColor: COLORS.accentLight,
+    gap: 4,
+    paddingVertical: 5,
     paddingHorizontal: SPACING.sm,
-    paddingVertical: 2,
-    borderRadius: RADIUS.sm,
+    backgroundColor: COLORS.primaryTint,
+    borderRadius: RADIUS.full,
+    borderWidth: 1,
+    borderColor: '#BFDBFE',
   },
-  categoryText: {
+  myTicketsText: {
     ...TYPOGRAPHY.caption,
     color: COLORS.primary,
     fontWeight: '700',
-    fontSize: 11,
+    fontSize: 12,
   },
-  statusBadge: {
-    backgroundColor: COLORS.successLight,
-    paddingHorizontal: SPACING.sm,
-    paddingVertical: 2,
-    borderRadius: RADIUS.full,
+  searchBar: {
+    marginTop: SPACING.sm,
+    marginBottom: SPACING.xs,
   },
-  statusText: {
-    ...TYPOGRAPHY.caption,
-    color: COLORS.success,
-    fontSize: 10,
-    fontWeight: '600',
-  },
-  eventTitle: {
-    ...TYPOGRAPHY.h3,
-    color: COLORS.text,
-    fontSize: 17,
-    marginTop: 4,
+  filterSection: {
     marginBottom: SPACING.sm,
   },
-  infoRow: {
+  typeFilterRow: {
+    flexDirection: 'row',
+    gap: 6,
+    paddingVertical: 4,
+  },
+  typeBtn: {
+    paddingVertical: 6,
+    paddingHorizontal: 12,
+    borderRadius: RADIUS.full,
+    backgroundColor: '#FFFFFF',
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  typeBtnActive: {
+    backgroundColor: COLORS.primary,
+    borderColor: COLORS.primary,
+  },
+  typeBtnText: {
+    ...TYPOGRAPHY.caption,
+    color: COLORS.textSecondary,
+    fontWeight: '600',
+  },
+  typeBtnTextActive: {
+    color: '#FFFFFF',
+  },
+  pricingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: SPACING.sm,
-    marginBottom: 6,
+    gap: 8,
+    marginTop: 6,
+    paddingHorizontal: 2,
   },
-  infoText: {
-    ...TYPOGRAPHY.body2,
+  filterLabel: {
+    ...TYPOGRAPHY.caption,
+    color: COLORS.textMuted,
+    fontWeight: '600',
+    fontSize: 11,
+  },
+  pricingPill: {
+    paddingVertical: 3,
+    paddingHorizontal: 10,
+    borderRadius: RADIUS.sm,
+    backgroundColor: '#F1F5F9',
+    borderWidth: 1,
+    borderColor: COLORS.border,
+  },
+  pricingPillActive: {
+    backgroundColor: COLORS.secondary,
+    borderColor: COLORS.secondary,
+  },
+  pricingPillText: {
+    ...TYPOGRAPHY.caption,
     color: COLORS.textSecondary,
-    fontSize: 13,
+    fontSize: 11,
+    fontWeight: '600',
   },
-  footerRow: {
-    marginTop: SPACING.md,
-    paddingTop: SPACING.sm,
-    borderTopWidth: 1,
-    borderTopColor: COLORS.borderLight,
+  pricingPillTextActive: {
+    color: '#FFFFFF',
+  },
+  listContent: {
+    paddingTop: SPACING.xs,
+    paddingBottom: SPACING.xxxl,
   },
 });
